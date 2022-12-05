@@ -1,6 +1,8 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
+#include <algorithm>
+#include <numeric>
 
 template <class Type>
 class Equation
@@ -53,6 +55,41 @@ public:
 	}
 };
 
+//////////////////
+template <typename T>
+bool RootMatch(T input, const Equation<T>& eq)
+{
+	if (eq.k1 == input)
+	{
+		return true;
+	}
+
+	if (eq.k2 == input)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+template <typename T>
+bool IfRootMatch(T input, const std::vector<Equation<T>>& arr)
+{
+	for (size_t i = 0; i < arr.size(); i++)
+	{
+		if (RootMatch(input, arr[i]))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+
+/////////////////
+
 
 int main(void)
 {
@@ -63,7 +100,11 @@ int main(void)
 	std::cout << EquDouble;
 	std::cout << EquFloat;
 
-	std::vector<Equation<double>> EquationArray;
+
+/////////////////////////////////////////////////////////////
+
+
+	std::vector<Equation<double>> EquationDoubleArray;
 
 	Equation<double> EquDouble1(1, -9, 20);
 	Equation<double> EquDouble2(1, -8, 15);
@@ -71,18 +112,109 @@ int main(void)
 	Equation<double> EquDouble4(1, -12, 36);
 	Equation<double> EquDouble5(1, -10, 16);
 
-	EquationArray.push_back(EquDouble1);
-	EquationArray.push_back(EquDouble2);
-	EquationArray.push_back(EquDouble3);
-	EquationArray.push_back(EquDouble4);
-	EquationArray.push_back(EquDouble5);
+	EquationDoubleArray.push_back(EquDouble1);
+	EquationDoubleArray.push_back(EquDouble2);
+	EquationDoubleArray.push_back(EquDouble3);
+	EquationDoubleArray.push_back(EquDouble4);
+	EquationDoubleArray.push_back(EquDouble5);
+
+
+	std::vector<Equation<float>> EquationFloatArray;
+
+	Equation<float> EquFloat1(1, -9, 20);
+	Equation<float> EquFloat2(1, -8, 15);
+	Equation<float> EquFloat3(1, -3, 2);
+	Equation<float> EquFloat4(1, -12, 36);
+	Equation<float> EquFloat5(1, -10, 16);
+
+	EquationFloatArray.push_back(EquFloat1);
+	EquationFloatArray.push_back(EquFloat2);
+	EquationFloatArray.push_back(EquFloat3);
+	EquationFloatArray.push_back(EquFloat4);
+	EquationFloatArray.push_back(EquFloat5);
 
 ////////////////////////////////////////////////////////////////
 
 	std::cout << "copy test" << std::endl;
 
-	std::copy(EquationArray.begin(), EquationArray.end(),
+	std::copy(EquationDoubleArray.begin(), EquationDoubleArray.end(),
 		std::ostream_iterator<Equation<double>>(std::cout, " "));
+
+
+////////////////////////Root Match (no Lambda, no <algorithm>//////////////////////////////////////
+/*
+	std::cout << "ROOT MATCH TEST" << std::endl;
+
+	if (IfRootMatch(7.0, EquationDoubleArray))
+	{
+		std::cout << "Match found!" << std::endl;
+	}
+	else
+	{
+		std::cout << "NO match found!" << std::endl;
+	}
+
+	if (IfRootMatch(5.0f, EquationFloatArray))
+	{
+		std::cout << "Match found!" << std::endl;
+	}
+	else
+	{
+		std::cout << "NO match found!" << std::endl;
+	}
+*/
+/////////////////////   Lambda-function 1   //////////////////////////////////////	
+/*
+	std::cout << "Lambda-function 1 TEST" << std::endl;
+
+	//cin >> v;
+	double v = 5.0;
+	auto L_RootMatch = [v](const Equation<double>& eq)
+	{
+		return ((eq.k1 == v) || (eq.k2 == v));
+	};
+
+	auto RootMatchResult = std::find_if(EquationDoubleArray.begin(), EquationDoubleArray.end(), L_RootMatch);
+
+	if (RootMatchResult != EquationDoubleArray.end())
+	{
+		std::cout << "Match found!" << std::endl;
+	}
+	else
+	{
+		std::cout << "NO match found!" << std::endl;
+	}
+*/
+/////////////////////   Lambda-function 2   ///////////////////////////////////////
+
+	std::cout << "Lambda-function 2 TEST" << std::endl;
+
+	//cin >> v;
+
+	double v;
+	v = 6.0;
+
+	auto L_ifRootisLess = [v](int amount, const Equation<double>& eq)
+	{		
+		if (eq.k1 < v)
+		{
+			amount++;
+		}
+
+		if (eq.k2 < v)
+		{
+			amount++;
+		}
+
+		return amount;		
+	};
+
+	auto AmountResult = std::accumulate(EquationDoubleArray.begin(), EquationDoubleArray.end(), 0, L_ifRootisLess);
+
+	std::cout << "Total amount of roots, that are (less than assigned value) : " << AmountResult << std::endl;
+	std::cout << "	END OF PROGRAMM" << std::endl;
+
+
 
 	return 0;
 }
