@@ -89,6 +89,46 @@ bool IfRootMatch(T input, const std::vector<Equation<T>>& arr)
 
 
 /////////////////
+template <typename T>
+std::vector<T> UniqueRoots(const std::vector<Equation<T>>& arr)
+{
+	std::vector<T> ResultArray;
+	ResultArray.resize(0);
+
+	for (size_t i = 0; i < arr.size(); i++)//through input array
+	{
+		bool repeat_root1 = false;
+		bool repeat_root2 = false;
+		for (size_t j = 0; j < ResultArray.size(); j++)//through result array
+		{
+			if (arr[i].k1 == ResultArray[j]) 
+			{
+				repeat_root1 = true;
+			}
+		}
+
+		if (!repeat_root1)
+		{
+			ResultArray.push_back(arr[i].k1);
+		}
+
+		for (size_t j = 0; j < ResultArray.size(); j++)//through result array
+		{
+			if (arr[i].k2 == ResultArray[j])
+			{
+				repeat_root2 = true;
+			}
+		}
+
+		if (!repeat_root2)
+		{
+			ResultArray.push_back(arr[i].k2);
+		}
+	}
+
+	return ResultArray;
+
+}
 
 
 int main(void)
@@ -142,8 +182,8 @@ int main(void)
 
 
 ////////////////////////Root Match (no Lambda, no <algorithm>//////////////////////////////////////
-/*
-	std::cout << "ROOT MATCH TEST" << std::endl;
+
+	std::cout << "	ROOT MATCH TEST" << std::endl;
 
 	if (IfRootMatch(7.0, EquationDoubleArray))
 	{
@@ -162,10 +202,10 @@ int main(void)
 	{
 		std::cout << "NO match found!" << std::endl;
 	}
-*/
+
 /////////////////////   Lambda-function 1   //////////////////////////////////////	
-/*
-	std::cout << "Lambda-function 1 TEST" << std::endl;
+
+	std::cout << "	Lambda-function 1 TEST" << std::endl;
 
 	//cin >> v;
 	double v = 5.0;
@@ -184,14 +224,14 @@ int main(void)
 	{
 		std::cout << "NO match found!" << std::endl;
 	}
-*/
+
 /////////////////////   Lambda-function 2   ///////////////////////////////////////
 
-	std::cout << "Lambda-function 2 TEST" << std::endl;
+	std::cout << "	Lambda-function 2 TEST" << std::endl;
 
 	//cin >> v;
 
-	double v;
+	//double v;
 	v = 6.0;
 
 	auto L_ifRootisLess = [v](int amount, const Equation<double>& eq)
@@ -212,7 +252,21 @@ int main(void)
 	auto AmountResult = std::accumulate(EquationDoubleArray.begin(), EquationDoubleArray.end(), 0, L_ifRootisLess);
 
 	std::cout << "Total amount of roots, that are (less than assigned value) : " << AmountResult << std::endl;
-	std::cout << "	END OF PROGRAMM" << std::endl;
+	//std::cout << "	END OF PROGRAMM" << std::endl;
+
+///////////////////////////////////////////////////////////////////////////////
+
+	std::cout << "	Unique roots TEST" << std::endl;
+
+	std::vector<double> UniqueRootsArrayTest;
+	UniqueRootsArrayTest.resize(0);
+
+	UniqueRootsArrayTest = UniqueRoots<double>(EquationDoubleArray);
+
+	for (size_t i = 0; i < UniqueRootsArrayTest.size(); i++)
+	{
+		std::cout << "unique root #" << i << " = " << UniqueRootsArrayTest[i] << std::endl;
+	}
 
 
 
